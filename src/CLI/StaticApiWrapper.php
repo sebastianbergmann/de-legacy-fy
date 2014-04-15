@@ -111,28 +111,48 @@ class %s
     }
 
     /**
-     * @param string $bootstrap
+     * @param  string $bootstrap
+     * @throws RuntimeException
      */
     private function loadBootstrap($bootstrap)
     {
         if (!file_exists($bootstrap)) {
+            throw new RuntimeException(
+                sprintf(
+                    'Cannot load bootstrap script "%s"',
+                    $bootstrap
+                )
+            );
         }
 
         require $bootstrap;
     }
 
     /**
-     * @param string $class
-     * @param string $file
+     * @param  string $class
+     * @param  string $file
+     * @throws RuntimeException
      */
     private function loadClass($class, $file)
     {
         if (!file_exists($file)) {
+            throw new RuntimeException(
+                sprintf(
+                    'Cannot load source file "%s"',
+                    $file
+                )
+            );
         }
 
         require $file;
 
         if (!class_exists($class, false)) {
+            throw new RuntimeException(
+                sprintf(
+                    'Class "%s" does not exist',
+                    $class
+                )
+            );
         }
     }
 
