@@ -97,9 +97,16 @@ class WrapStaticApiCommand extends AbstractCommand
     {
         $wrapper = new StaticApiWrapper;
 
+        $originalClass = $input->getArgument('class');
+        $originalFile  = $input->getArgument('file');
+        $wrapperClass  = $originalClass . 'Wrapper';
+        $wrapperFile   = str_replace('.php', 'Wrapper.php', $originalFile);
+
         $wrapper->generate(
-            $input->getArgument('class'),
-            $input->getArgument('file'),
+            $originalClass,
+            $originalFile,
+            $wrapperClass,
+            $wrapperFile,
             $input->getOption('bootstrap')
         );
     }

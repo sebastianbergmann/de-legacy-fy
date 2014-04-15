@@ -58,13 +58,12 @@ class StaticApiWrapper
     /**
      * @param string         $originalClass
      * @param string         $originalFile
+     * @param string         $wrapperClass
+     * @param string         $wrapperFile
      * @param boolean|string $bootstrap
      */
-    public function generate($originalClass, $originalFile, $bootstrap)
+    public function generate($originalClass, $originalFile, $wrapperClass, $wrapperFile, $bootstrap)
     {
-        $wrapperClass = $originalClass . 'Wrapper';
-        $wrapperFile  = str_replace('.php', 'Wrapper.php', $originalFile);
-
         if (is_string($bootstrap)) {
             $this->loadBootstrap($bootstrap);
         }
