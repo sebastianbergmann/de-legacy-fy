@@ -60,7 +60,7 @@ class Library
 ```
 
 The problem with a static method is not that the static method itself is hard
-to test. The problem is that the code that used the static method is tightly
+to test. The problem is that the code that uses the static method is tightly
 coupled to the static method, making it impossible to test without also
 executing the code of the static method.
 
