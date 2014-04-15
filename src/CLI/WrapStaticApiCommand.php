@@ -109,5 +109,13 @@ class WrapStaticApiCommand extends AbstractCommand
             $wrapperFile,
             $input->getOption('bootstrap')
         );
+
+        $output->writeln(
+            sprintf(
+                'Generated class "%s" in file "%s"',
+                $wrapperClass,
+                $wrapperFile
+            )
+        );
     }
 }
