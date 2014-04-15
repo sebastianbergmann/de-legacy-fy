@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="de-legacy-fy" default="build">
+ <target name="build" depends="prepare,lint"/>
+
+ <target name="clean" description="Cleanup build artifacts">
+  <delete dir="${basedir}/bin"/>
+  <delete dir="${basedir}/vendor"/>
+  <delete file="${basedir}/composer.lock"/>
+  <delete dir="${basedir}/build/phar"/>
+  <delete>
+   <fileset dir="${basedir}/build" includes="*.phar"/>
+  </delete>
+ </target>
+
+ <target name="composer" description="Install dependencies with Composer">
+  <get src="https://getcomposer.org/composer.phar" dest="${basedir}/composer.phar" skipexisting="true"/>
+
+  <exec executable="php">
+   <arg value="composer.phar"/>
+   <arg value="install"/>
+  </exec>
+ </target>
+
+ <target name="prepare" depends="clean,composer" description="Prepare for build">
+ </target>
+
+ <target name="lint">
+  <apply executable="php" failonerror="true">
+   <arg value="-l" />
+
+   <fileset dir="${basedir}/src">
+    <include name="**/*.php" />
+    <modified />
+   </fileset>
+  </apply>
+ </target>
+
+ <target name="phpcs" description="Find coding standard violations using PHP_CodeSniffer">
+  <exec executable="phpcs">
+   <arg value="--standard=PSR2" />
+   <arg value="--extensions=php" />
+   <arg path="${basedir}/src" />
+  </exec>
+ </target>
+
+ <target name="phar"
+         description="Create PHAR archive of de-legacy-fy and all its dependencies"
+         depends="clean,composer,phar-build">
+  <mkdir dir="${basedir}/build/phar"/>
+ </target>
+
+ <target name="phar-build">
+  <exec executable="bash" outputproperty="version">
+   <arg value="-c" />
+   <arg value="${basedir}/de-legacy-fy --version | awk 'BEGIN { ORS = &quot;&quot;; } {print $2}'" />
+  </exec>
+
+  <copy todir="${basedir}/build/phar/src">
+   <fileset dir="${basedir}/src">
+    <include name="**/*.php" />
+   </fileset>
+  </copy>
+
+  <copy todir="${basedir}/build/phar/version">
+   <fileset dir="${basedir}/vendor/sebastian/version/src">
+    <include name="**/*.php" />
+    <exclude name="**/autoload.php" />
+   </fileset>
+  </copy>
+
+  <copy todir="${basedir}/build/phar/symfony">
+   <fileset dir="${basedir}/vendor/symfony">
+    <include name="**/*.php" />
+    <exclude name="**/Tests/**" />
+   </fileset>
+  </copy>
+
+  <exec executable="${basedir}/build/phar-manifest.php" output="${basedir}/build/phar/manifest.txt"/>
+
+  <exec executable="phpab">
+   <arg value="--all" />
+   <arg value="--phar" />
+   <arg value="--output" />
+   <arg path="${basedir}/build/de-legacy-fy-${version}.phar" />
+   <arg value="--template" />
+   <arg path="${basedir}/build/phar-autoload.php.in" />
+   <arg value="--indent" />
+   <arg value="            " />
+   <arg path="${basedir}/build/phar" />
+  </exec>
+
+  <chmod file="${basedir}/build/de-legacy-fy-${version}.phar" perm="ugo+rx"/>
+ </target>
+</project>

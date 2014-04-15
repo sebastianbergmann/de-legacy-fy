@@ -1,0 +1,34 @@
+{
+    "name": "sebastian/de-legacy-fy",
+    "description": "...",
+    "homepage": "https://github.com/sebastianbergmann/de-legacy-fy",
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Sebastian Bergmann",
+            "email": "sebastian@phpunit.de",
+            "role": "lead"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/sebastianbergmann/de-legacy-fy/issues"
+    },
+    "require": {
+        "php": ">=5.3.3",
+        "sebastian/version": "~1.0",
+        "symfony/console": "~2.4"
+    },
+    "autoload": {
+        "classmap": [
+            "src/"
+        ]
+    },
+    "bin": [
+        "de-legacy-fy"
+    ],
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
+}
