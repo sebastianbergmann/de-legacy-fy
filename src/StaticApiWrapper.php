@@ -105,7 +105,7 @@ class %s
             }
         }
 
-        $buffer .= '}';
+        $buffer .= "}\n";
 
         file_put_contents($wrapperFile, $buffer);
     }
