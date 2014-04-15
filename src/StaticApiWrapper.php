@@ -56,6 +56,27 @@ use ReflectionMethod;
 class StaticApiWrapper
 {
     /**
+     * @var string
+     */
+    private static $classTemplate = '<?php
+/**
+ * Automatically generated wrapper class for %s
+ * @see %s
+ */
+class %s
+{';
+
+    /**
+     * @var string
+     */
+    private static $methodTemplate = '%s
+    public function %s(%s)
+    {
+        return %s::%s(%s);
+    }
+';
+
+    /**
      * @param string         $originalClass
      * @param string         $originalFile
      * @param string         $wrapperClass
@@ -73,13 +94,7 @@ class StaticApiWrapper
         $rc = new ReflectionClass($originalClass);
 
         $buffer = sprintf(
-            '<?php
-/**
- * Automatically generated wrapper class for %s
- * @see %s
- */
-class %s
-{',
+            self::$classTemplate,
             $originalClass,
             $originalClass,
             $wrapperClass
@@ -88,12 +103,7 @@ class %s
         foreach ($rc->getMethods() as $method) {
             if ($method->isPublic() /*&& $method->isStatic()*/) {
                 $buffer .= sprintf(
-                    '%s
-    public function %s(%s)
-    {
-        return %s::%s(%s);
-    }
-',
+                    self::$methodTemplate,
                     $this->getDocblock($method),
                     $method->getName(),
                     $this->getMethodParameters($method),
