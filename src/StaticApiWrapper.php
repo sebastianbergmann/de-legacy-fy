@@ -235,10 +235,10 @@ class %s
 
                 if ($parameter->isDefaultValueAvailable()) {
                     $default = ' = ' . str_replace(
-                            "array (\n",
-                            'array(',
-                            var_export($parameter->getDefaultValue(), true)
-                        );
+                        "array (\n",
+                        'array(',
+                        var_export($parameter->getDefaultValue(), true)
+                    );
                 } elseif ($parameter->isOptional()) {
                     $default = ' = null';
                 }

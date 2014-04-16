@@ -76,13 +76,13 @@ class WrapStaticApiCommand extends AbstractCommand
                  'file',
                  InputArgument::REQUIRED,
                  'Source file that declares the static API class'
-            )
-            ->addOption(
-                'bootstrap',
-                null,
-                InputOption::VALUE_REQUIRED,
-                'Bootstrap script to be loaded before code analysis'
-            );
+             )
+             ->addOption(
+                 'bootstrap',
+                 null,
+                 InputOption::VALUE_REQUIRED,
+                 'Bootstrap script to be loaded before code analysis'
+             );
     }
 
     /**
