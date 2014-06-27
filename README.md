@@ -41,7 +41,7 @@ Make sure you have `~/.composer/vendor/bin/` in your path.
 
 ## Usage Examples
 
-### Generating characterization tests using function trace data
+### Generating characterization tests using execution trace data
 
 [Characterization Tests are an attempt to lock existing behavior into an untested or undocumented system.](http://c2.com/cgi/wiki?CharacterizationTest) They are described briefly in Michael Feathers' book "Working Effectively With Legacy Code", among other places.
 
