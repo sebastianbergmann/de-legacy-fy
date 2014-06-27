@@ -130,7 +130,24 @@ class CharacterizationTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, add($a, $b));
     }
 
-    // ... see above ...
+    /**
+     * @return array
+     */
+    public function provider()
+    {
+        return array(
+            array($this->decode('aTozOw=='), $this->decode('aToxOw=='), $this->decode('aToyOw=='))
+        );
+    }
+
+    /**
+     * @param  string $value
+     * @return mixed
+     */
+    private function decode($value)
+    {
+        return unserialize(base64_decode($value));
+    }
 }
 ```
 
