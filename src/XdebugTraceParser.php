@@ -67,7 +67,13 @@ class XdebugTraceParser
         while ($line = fgets($fh)) {
             $line = explode("\t", $line);
 
-            if (count($line) == 1 || strpos($line[0], 'Version') === 0 || strpos($line[0], 'File format') === 0 || strpos($line[0], 'TRACE') === 0) {
+            if (strpos($line[0], 'File format') === 0) {
+                if (array_pop(explode(' ',$line[0])) < 4) {
+                    throw new RuntimeException(
+                        'Execution trace data file must be in format version 4 (or later)'
+                    );
+                }
+
                 continue;
             }
 
