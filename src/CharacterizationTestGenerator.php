@@ -41,59 +41,81 @@
  * @since     File available since Release 1.0.0
  */
 
-namespace SebastianBergmann\DeLegacyFy\CLI;
-
-use SebastianBergmann\Version;
-use Symfony\Component\Console\Application as AbstractApplication;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\ArrayInput;
+namespace SebastianBergmann\DeLegacyFy;
 
 /**
- * TextUI frontend for de-legacy-fy.
- *
  * @author    Sebastian Bergmann <sebastian@phpunit.de>
  * @copyright 2014 Sebastian Bergmann <sebastian@phpunit.de>
  * @license   http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link      http://github.com/sebastianbergmann/de-legacy-fy/tree
  * @since     Class available since Release 1.0.0
  */
-class Application extends AbstractApplication
+class CharacterizationTestGenerator
 {
-    public function __construct()
+    /**
+     * @var string
+     */
+    private static $classTemplate = '<?php
+class %s extends PHPUnit_Framework_TestCase
+{
+    /**
+     * @return array
+     */
+    public function provider()
     {
-        $version = new Version('1.0', dirname(dirname(__DIR__)));
-        parent::__construct('de-legacy-fy', $version->getVersion());
-
-        $this->add(new GenerateCharacterizationTestCommand);
-        $this->add(new WrapStaticApiCommand);
+        return array(
+%s
+        );
     }
 
     /**
-     * Runs the current application.
-     *
-     * @param InputInterface  $input  An Input instance
-     * @param OutputInterface $output An Output instance
-     *
-     * @return integer 0 if everything went fine, or an error code
+     * @param  string $value
+     * @return mixed
      */
-    public function doRun(InputInterface $input, OutputInterface $output)
+    private function decode($value)
     {
-        if (!$input->hasParameterOption('--quiet')) {
-            $output->write(
-                sprintf(
-                    "de-legacy-fy %s by Sebastian Bergmann.\n\n",
-                    $this->getVersion()
-                )
+        return unserialize(base64_decode($value));
+    }
+}
+';
+
+    /**
+     * @param string $traceFile
+     * @param string $unit
+     * @param string $testClass
+     * @param string $testFile
+     */
+    public function generate($traceFile, $unit, $testClass, $testFile)
+    {
+        $parser = new XdebugTraceParser;
+        $data   = $parser->parse($traceFile, $unit);
+        $buffer = '';
+
+        for ($i = 0; $i < count($data); $i++) {
+            $last = $i == count($data) - 1;
+
+            $buffer .= sprintf(
+                "            array(%s)%s",
+                join(
+                    ', ',
+                    array_map(
+                        function ($parameter) {
+                            return '$this->decode(\'' . $parameter . '\')';
+                        },
+                        $data[$i]
+                    )
+                ),
+                !$last ? ",\n" : ''
             );
         }
 
-        if ($input->hasParameterOption('--version') ||
-            $input->hasParameterOption('-V')) {
-            exit;
-        }
-
-        parent::doRun($input, $output);
+        file_put_contents(
+            $testFile,
+            sprintf(
+                self::$classTemplate,
+                $testClass,
+                $buffer
+            )
+        );
     }
 }

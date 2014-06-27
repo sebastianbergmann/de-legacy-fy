@@ -41,59 +41,52 @@
  * @since     File available since Release 1.0.0
  */
 
-namespace SebastianBergmann\DeLegacyFy\CLI;
-
-use SebastianBergmann\Version;
-use Symfony\Component\Console\Application as AbstractApplication;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\ArrayInput;
+namespace SebastianBergmann\DeLegacyFy;
 
 /**
- * TextUI frontend for de-legacy-fy.
- *
  * @author    Sebastian Bergmann <sebastian@phpunit.de>
  * @copyright 2014 Sebastian Bergmann <sebastian@phpunit.de>
  * @license   http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link      http://github.com/sebastianbergmann/de-legacy-fy/tree
  * @since     Class available since Release 1.0.0
  */
-class Application extends AbstractApplication
+class XdebugTraceParser
 {
-    public function __construct()
-    {
-        $version = new Version('1.0', dirname(dirname(__DIR__)));
-        parent::__construct('de-legacy-fy', $version->getVersion());
-
-        $this->add(new GenerateCharacterizationTestCommand);
-        $this->add(new WrapStaticApiCommand);
-    }
-
     /**
-     * Runs the current application.
-     *
-     * @param InputInterface  $input  An Input instance
-     * @param OutputInterface $output An Output instance
-     *
-     * @return integer 0 if everything went fine, or an error code
+     * @param  string $filename
+     * @param  string $unit
+     * @return array
      */
-    public function doRun(InputInterface $input, OutputInterface $output)
+    public function parse($filename, $unit)
     {
-        if (!$input->hasParameterOption('--quiet')) {
-            $output->write(
-                sprintf(
-                    "de-legacy-fy %s by Sebastian Bergmann.\n\n",
-                    $this->getVersion()
-                )
-            );
+        $data       = array();
+        $parameters = null;
+
+        $fh = fopen($filename, 'r');
+
+        while ($line = fgets($fh)) {
+            if (strpos($line, 'Version') === 0 || strpos($line, 'File format') === 0 || strpos($line, 'TRACE') === 0) {
+                continue;
+            }
+
+            $line = explode("\t", $line);
+
+            if (count($line) == 1) {
+                continue;
+            }
+
+            if (count($line) == 13 && $line[5] == $unit) {
+                $parameters = array_map('trim', array_slice($line, 11, $line[10]));
+            }
+
+            if ($parameters !== null && count($line) == 6 && $line[2] == 'R') {
+                $data[]     = array_merge(array(trim($line[5])), $parameters);
+                $parameters = null;
+            }
         }
 
-        if ($input->hasParameterOption('--version') ||
-            $input->hasParameterOption('-V')) {
-            exit;
-        }
+        fclose($fh);
 
-        parent::doRun($input, $output);
+        return $data;
     }
 }

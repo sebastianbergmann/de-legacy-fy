@@ -43,57 +43,80 @@
 
 namespace SebastianBergmann\DeLegacyFy\CLI;
 
-use SebastianBergmann\Version;
-use Symfony\Component\Console\Application as AbstractApplication;
+use SebastianBergmann\DeLegacyFy\CharacterizationTestGenerator;
+
+use Symfony\Component\Console\Command\Command as AbstractCommand;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\ArrayInput;
 
 /**
- * TextUI frontend for de-legacy-fy.
- *
  * @author    Sebastian Bergmann <sebastian@phpunit.de>
  * @copyright 2014 Sebastian Bergmann <sebastian@phpunit.de>
  * @license   http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link      http://github.com/sebastianbergmann/de-legacy-fy/tree
  * @since     Class available since Release 1.0.0
  */
-class Application extends AbstractApplication
+class GenerateCharacterizationTestCommand extends AbstractCommand
 {
-    public function __construct()
+    /**
+     * Configures the current command.
+     */
+    protected function configure()
     {
-        $version = new Version('1.0', dirname(dirname(__DIR__)));
-        parent::__construct('de-legacy-fy', $version->getVersion());
-
-        $this->add(new GenerateCharacterizationTestCommand);
-        $this->add(new WrapStaticApiCommand);
+        $this->setName('generate-characterization-test')
+            ->setDescription('Generates a characterization test for a function or method')
+            ->addArgument(
+                'unit',
+                InputArgument::REQUIRED,
+                'Function or method to be characterized'
+            )
+            ->addArgument(
+                'trace-file',
+                InputArgument::REQUIRED,
+                'Xdebug trace file'
+            )
+            ->addArgument(
+                'test-class',
+                InputArgument::REQUIRED,
+                'Name of the test class'
+            )
+            ->addArgument(
+                'test-class-file',
+                InputArgument::REQUIRED,
+                'File to which to write the test code to'
+            );
     }
 
     /**
-     * Runs the current application.
+     * Executes the current command.
      *
-     * @param InputInterface  $input  An Input instance
-     * @param OutputInterface $output An Output instance
+     * @param InputInterface  $input  An InputInterface instance
+     * @param OutputInterface $output An OutputInterface instance
      *
-     * @return integer 0 if everything went fine, or an error code
+     * @return null|integer null or 0 if everything went fine, or an error code
      */
-    public function doRun(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (!$input->hasParameterOption('--quiet')) {
-            $output->write(
-                sprintf(
-                    "de-legacy-fy %s by Sebastian Bergmann.\n\n",
-                    $this->getVersion()
-                )
-            );
-        }
+        $testClass     = $input->getArgument('test-class');
+        $testClassFile = $input->getArgument('test-class-file');
 
-        if ($input->hasParameterOption('--version') ||
-            $input->hasParameterOption('-V')) {
-            exit;
-        }
+        $generator = new CharacterizationTestGenerator;
 
-        parent::doRun($input, $output);
+        $generator->generate(
+            $input->getArgument('trace-file'),
+            $input->getArgument('unit'),
+            $testClass,
+            $testClassFile
+        );
+
+        $output->writeln(
+            sprintf(
+                'Generated class "%s" in file "%s"',
+                $testClass,
+                $testClassFile
+            )
+        );
     }
 }

@@ -41,59 +41,49 @@
  * @since     File available since Release 1.0.0
  */
 
-namespace SebastianBergmann\DeLegacyFy\CLI;
+namespace SebastianBergmann\DeLegacyFy;
 
-use SebastianBergmann\Version;
-use Symfony\Component\Console\Application as AbstractApplication;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\ArrayInput;
+use PHPUnit_Framework_TestCase;
+
+use org\bovigo\vfs\vfsStream;
+use org\bovigo\vfs\vfsStreamDirectory;
 
 /**
- * TextUI frontend for de-legacy-fy.
- *
  * @author    Sebastian Bergmann <sebastian@phpunit.de>
  * @copyright 2014 Sebastian Bergmann <sebastian@phpunit.de>
  * @license   http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link      http://github.com/sebastianbergmann/de-legacy-fy/tree
  * @since     Class available since Release 1.0.0
  */
-class Application extends AbstractApplication
+class CharacterizationTestGeneratorTest extends PHPUnit_Framework_TestCase
 {
-    public function __construct()
-    {
-        $version = new Version('1.0', dirname(dirname(__DIR__)));
-        parent::__construct('de-legacy-fy', $version->getVersion());
-
-        $this->add(new GenerateCharacterizationTestCommand);
-        $this->add(new WrapStaticApiCommand);
-    }
+    /**
+     * @var vfsStreamDirectory
+     */
+    private $root;
 
     /**
-     * Runs the current application.
-     *
-     * @param InputInterface  $input  An Input instance
-     * @param OutputInterface $output An Output instance
-     *
-     * @return integer 0 if everything went fine, or an error code
+     * @var CharacterizationTestGenerator
      */
-    public function doRun(InputInterface $input, OutputInterface $output)
+    private $generator;
+
+    protected function setUp()
     {
-        if (!$input->hasParameterOption('--quiet')) {
-            $output->write(
-                sprintf(
-                    "de-legacy-fy %s by Sebastian Bergmann.\n\n",
-                    $this->getVersion()
-                )
-            );
-        }
+        $this->root      = vfsStream::setup();
+        $this->generator = new CharacterizationTestGenerator;
+    }
 
-        if ($input->hasParameterOption('--version') ||
-            $input->hasParameterOption('-V')) {
-            exit;
-        }
+    public function testGeneratesDataProvider()
+    {
+        $actual = vfsStream::url('root') . '/CharacterizationTest.php';
 
-        parent::doRun($input, $output);
+        $this->generator->generate(
+            __DIR__ . '/_fixture/trace.xt',
+            'add',
+            'CharacterizationTest',
+            $actual
+        );
+
+        $this->assertFileEquals(__DIR__ . '/_fixture/CharacterizationTest.txt', $actual);
     }
 }

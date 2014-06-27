@@ -1,0 +1,12 @@
+Version: 2.3.0dev
+File format: 4
+TRACE START [2014-06-27 10:40:40]
+1	0	0	0.000332	279896	{main}	1		/home/sb/test.php	0	0
+2	1	0	0.000419	280136	add	1		/home/sb/test.php	7	2	aToxOw==	aToyOw==
+2	1	1	0.000494	280256
+2	1	R			aTozOw==
+1	0	1	0.000527	280016
+1	0	R			aToxOw==
+			0.000909	8488
+TRACE END   [2014-06-27 10:40:40]
+
