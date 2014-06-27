@@ -65,13 +65,9 @@ class XdebugTraceParser
         $fh = fopen($filename, 'r');
 
         while ($line = fgets($fh)) {
-            if (strpos($line, 'Version') === 0 || strpos($line, 'File format') === 0 || strpos($line, 'TRACE') === 0) {
-                continue;
-            }
-
             $line = explode("\t", $line);
 
-            if (count($line) == 1) {
+            if (count($line) == 1 || strpos($line[0], 'Version') === 0 || strpos($line[0], 'File format') === 0 || strpos($line[0], 'TRACE') === 0) {
                 continue;
             }
 
