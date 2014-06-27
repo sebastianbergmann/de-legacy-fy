@@ -45,7 +45,7 @@ Make sure you have `~/.composer/vendor/bin/` in your path.
 
 [Characterization Tests are an attempt to lock existing behavior into an untested or undocumented system.](http://c2.com/cgi/wiki?CharacterizationTest) They are described briefly in Michael Feathers' book ["Working Effectively With Legacy Code"](http://c2.com/cgi/wiki?WorkingEffectivelyWithLegacyCode), among other places.
 
-We can automatically generate a [data provider](http://phpunit.de/manual/current/en/writing-tests-for-phpunit.html#writing-tests-for-phpunit.data-providers) for a PHPUnit-based characterization test using [execution trace](http://xdebug.org/docs/execution_trace) that we can collect with [Xdebug](http://xdebug.org/).
+We can automatically generate a [data provider](http://phpunit.de/manual/current/en/writing-tests-for-phpunit.html#writing-tests-for-phpunit.data-providers) for a PHPUnit-based characterization test using [execution trace](http://xdebug.org/docs/execution_trace) data that we can collect with [Xdebug](http://xdebug.org/).
 
 Consider the following rather contrived and simple example:
 
