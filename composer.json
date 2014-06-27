@@ -1,6 +1,6 @@
 {
     "name": "sebastian/de-legacy-fy",
-    "description": "...",
+    "description": "Tool for dealing with legacy PHP code",
     "homepage": "https://github.com/sebastianbergmann/de-legacy-fy",
     "license": "BSD-3-Clause",
     "authors": [
