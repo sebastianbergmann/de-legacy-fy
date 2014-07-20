@@ -81,7 +81,7 @@ You can see the execution trace data collected by Xdebug below:
 The `generate-characterization-test` command of `de-legacy-fy` can automatically generate a data provider method for use with PHPUnit:
 
     $ de-legacy-fy generate-characterization-test add /tmp/trace.4251619279.xt CharacterizationTest CharacterizationTest.php
-    de-legacy-fy 1.0-dev by Sebastian Bergmann.
+    de-legacy-fy 1.0.1 by Sebastian Bergmann.
 
     Generated class "CharacterizationTest" in file "CharacterizationTest.php"
 
@@ -199,7 +199,7 @@ The `wrap-static-api` command of `de-legacy-fy` can automatically generate a
 wrapper class for a static API class such as `Library`:
 
     $ de-legacy-fy wrap-static-api Library Library.php
-    de-legacy-fy 1.0.0 by Sebastian Bergmann.
+    de-legacy-fy 1.0.1 by Sebastian Bergmann.
 
     Generated class "LibraryWrapper" in file "LibraryWrapper.php"
 
