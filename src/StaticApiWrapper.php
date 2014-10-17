@@ -244,7 +244,7 @@ class %s
                 }
             }
 
-            if ($parameter->isPassedByReference()) {
+            if (!$forCall && $parameter->isPassedByReference()) {
                 $reference = '&';
             }
 
