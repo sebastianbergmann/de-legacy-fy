@@ -252,6 +252,6 @@ and can be tested in isolation from it (as we can now stub or mock the
 Using the concept of [branch-by-abstraction](http://martinfowler.com/bliki/BranchByAbstraction.html)
 we can now write new code that uses the `LibraryWrapper` class and migrate old
 code from `Library` to `LibraryWrapper`. Eventually we can reimplement the
-functionality of `Library` inside the `LibraryWrapper` class. Once
-`LibraryWrapper` does not rely on `Library` anymore we can delete `Library`
-and rename `LibraryWrapper` to `Library`.
+functionality of `Library` inside the `LibraryWrapper` class. Once no code
+relies on `Library` anymore we can delete `Library` and rename `LibraryWrapper`
+to `Library`.
