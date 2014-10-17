@@ -68,7 +68,10 @@ class XdebugTraceParser
             $line = explode("\t", $line);
 
             if (strpos($line[0], 'File format') === 0) {
-                if (array_pop(explode(' ',$line[0])) < 4) {
+                $columns = explode(' ', $line[0]);
+                $version = array_pop($columns);
+
+                if ($version < 4) {
                     throw new RuntimeException(
                         'Execution trace data file must be in format version 4 (or later)'
                     );
