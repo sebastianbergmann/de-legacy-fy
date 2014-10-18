@@ -78,7 +78,7 @@ class CharacterizationTestGeneratorTest extends PHPUnit_Framework_TestCase
         $actual = vfsStream::url('root') . '/CharacterizationTest.php';
 
         $this->generator->generate(
-            __DIR__ . '/_fixture/trace.xt',
+            __DIR__ . '/_fixture/xdebug-2.3.xt',
             'add',
             'CharacterizationTest',
             $actual

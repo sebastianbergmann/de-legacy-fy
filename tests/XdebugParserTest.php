@@ -75,9 +75,20 @@ class XdebugParserTest extends PHPUnit_Framework_TestCase
                 )
             ),
             $this->parser->parse(
-                __DIR__ . '/_fixture/trace.xt',
+                __DIR__ . '/_fixture/xdebug-2.3.xt',
                 'add'
             )
+        );
+    }
+
+    /**
+     * @expectedException \SebastianBergmann\DeLegacyFy\RuntimeException
+     */
+    public function testExceptionIsRaisedForUnsupportedFileFormat()
+    {
+        $this->parser->parse(
+            __DIR__ . '/_fixture/xdebug-2.2.xt',
+            'add'
         );
     }
 }
