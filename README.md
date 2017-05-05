@@ -12,32 +12,30 @@ and make them as reusable as possible.
 
 ### PHP Archive (PHAR)
 
-The easiest way to obtain de-legacy-fy is to download a [PHP Archive (PHAR)](http://php.net/phar) that has all required dependencies of de-legacy-fy bundled in a single file:
+The easiest way to obtain de-legacy-fy is to download a [PHP Archive (PHAR)](https://secure.php.net/phar) that has all required dependencies of de-legacy-fy bundled in a single file:
 
-    wget https://phar.phpunit.de/de-legacy-fy.phar
-    chmod +x de-legacy-fy.phar
-    mv de-legacy-fy.phar /usr/local/bin/de-legacy-fy
+```
+$ wget https://phar.phpunit.de/de-legacy-fy.phar
+$ chmod +x de-legacy-fy.phar
+$ mv de-legacy-fy.phar /usr/local/bin/de-legacy-fy
+```
 
 You can also immediately use the PHAR after you have downloaded it, of course:
 
-    wget https://phar.phpunit.de/de-legacy-fy.phar
-    php de-legacy-fy.phar
+```
+$ wget https://phar.phpunit.de/de-legacy-fy.phar
+$ php de-legacy-fy.phar
+```
 
 ### Composer
 
-Simply add a dependency on `sebastian/de-legacy-fy` to your project's `composer.json` file if you use [Composer](http://getcomposer.org/) to manage the dependencies of your project. Here is a minimal example of a `composer.json` file that just defines a development-time dependency on de-legacy-fy:
+You can add this tool as a local, per-project, development-time dependency to your project using [Composer](https://getcomposer.org/):
 
-    {
-        "require-dev": {
-            "sebastian/de-legacy-fy": "*"
-        }
-    }
+```
+$ composer require --dev sebastian/de-legacy-fy
+```
 
-For a system-wide installation via Composer, you can run:
-
-    composer global require 'sebastian/de-legacy-fy=*'
-
-Make sure you have `~/.composer/vendor/bin/` in your path.
+You can then invoke it using the `vendor/bin/de-legacy-fy` executable.
 
 ## Usage Examples
 
@@ -61,29 +59,35 @@ add(1, 2);
 
 The command below executes the PHP script shown above with Xdebug's execution tracing enabled and configured to emit machine-readable output that includes arguments and return values:
 
-    $ php -d xdebug.auto_trace=1 -d xdebug.trace_format=1 -d xdebug.collect_params=5 -d xdebug.collect_return=1 test.php
+```
+$ php -d xdebug.auto_trace=1 -d xdebug.trace_format=1 -d xdebug.collect_params=5 -d xdebug.collect_return=1 test.php
+```
 
 You can see the execution trace data collected by Xdebug below:
 
-    $ cat /tmp/trace.4251619279.xt
-    Version: 2.3.0dev
-    File format: 4
-    TRACE START [2014-06-27 10:40:40]
-    1	0	0	0.000282	279896	{main}	1		/home/sb/test.php	0	0
-    2	1	0	0.000371	280136	add	1		/home/sb/test.php	7	2	aToxOw==	aToyOw==
-    2	1	1	0.000440	280256
-    2	1	R			aTozOw==
-    1	0	1	0.000470	280016
-    1	0	R			aToxOw==
-			    0.000648	8488
-    TRACE END   [2014-06-27 10:40:40]
+```
+$ cat /tmp/trace.4251619279.xt
+Version: 2.3.0dev
+File format: 4
+TRACE START [2014-06-27 10:40:40]
+1	0	0	0.000282	279896	{main}	1		/home/sb/test.php	0	0
+2	1	0	0.000371	280136	add	1		/home/sb/test.php	7	2	aToxOw==	aToyOw==
+2	1	1	0.000440	280256
+2	1	R			aTozOw==
+1	0	1	0.000470	280016
+1	0	R			aToxOw==
+            0.000648	8488
+TRACE END   [2014-06-27 10:40:40]
+```
 
 The `generate-characterization-test` command of `de-legacy-fy` can automatically generate a data provider method for use with PHPUnit:
 
-    $ de-legacy-fy generate-characterization-test add /tmp/trace.4251619279.xt CharacterizationTest CharacterizationTest.php
-    de-legacy-fy 1.0.2 by Sebastian Bergmann.
+```
+$ de-legacy-fy generate-characterization-test add /tmp/trace.4251619279.xt CharacterizationTest CharacterizationTest.php
+de-legacy-fy 1.0.2 by Sebastian Bergmann.
 
-    Generated class "CharacterizationTest" in file "CharacterizationTest.php"
+Generated class "CharacterizationTest" in file "CharacterizationTest.php"
+```
 
 For each invocation of the `add()` function (first argument of the `de-legacy-fy` command) the data provider will yield a data set that contains the arguments passed to the function as well as the result returned.
 
@@ -198,10 +202,12 @@ class Processor
 The `wrap-static-api` command of `de-legacy-fy` can automatically generate a
 wrapper class for a static API class such as `Library`:
 
-    $ de-legacy-fy wrap-static-api Library Library.php
-    de-legacy-fy 1.0.2 by Sebastian Bergmann.
+```
+$ de-legacy-fy wrap-static-api Library Library.php
+de-legacy-fy 1.0.2 by Sebastian Bergmann.
 
-    Generated class "LibraryWrapper" in file "LibraryWrapper.php"
+Generated class "LibraryWrapper" in file "LibraryWrapper.php"
+```
 
 ```php
 <?php

@@ -1,58 +1,17 @@
 <?php
-/**
- * de-legacy-fy
+/*
+ * This file is part of de-legacy-fy.
  *
- * Copyright (c) 2014, Sebastian Bergmann <sebastian@phpunit.de>.
- * All rights reserved.
+ * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- *   * Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *
- *   * Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
- *     distribution.
- *
- *   * Neither the name of Sebastian Bergmann nor the names of his
- *     contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
- * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- * COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
- * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *
- * @package   de-legacy-fy
- * @author    Sebastian Bergmann <sebastian@phpunit.de>
- * @copyright 2014 Sebastian Bergmann <sebastian@phpunit.de>
- * @license   http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
- * @since     File available since Release 1.0.0
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
-
 namespace SebastianBergmann\DeLegacyFy;
 
 use ReflectionClass;
 use ReflectionMethod;
 
-/**
- * @author    Sebastian Bergmann <sebastian@phpunit.de>
- * @copyright 2014 Sebastian Bergmann <sebastian@phpunit.de>
- * @license   http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
- * @link      http://github.com/sebastianbergmann/de-legacy-fy/tree
- * @since     Class available since Release 1.0.0
- */
 class StaticApiWrapper
 {
     /**
@@ -77,15 +36,15 @@ class %s
 ';
 
     /**
-     * @param string         $originalClass
-     * @param string         $originalFile
-     * @param string         $wrapperClass
-     * @param string         $wrapperFile
-     * @param boolean|string $bootstrap
+     * @param string      $originalClass
+     * @param string      $originalFile
+     * @param string      $wrapperClass
+     * @param string      $wrapperFile
+     * @param bool|string $bootstrap
      */
     public function generate($originalClass, $originalFile, $wrapperClass, $wrapperFile, $bootstrap)
     {
-        if (is_string($bootstrap)) {
+        if (\is_string($bootstrap)) {
             $this->loadBootstrap($bootstrap);
         }
 
@@ -93,7 +52,7 @@ class %s
 
         $rc = new ReflectionClass($originalClass);
 
-        $buffer = sprintf(
+        $buffer = \sprintf(
             self::$classTemplate,
             $originalClass,
             $originalClass,
@@ -102,7 +61,7 @@ class %s
 
         foreach ($rc->getMethods() as $method) {
             if ($method->isPublic() /*&& $method->isStatic()*/) {
-                $buffer .= sprintf(
+                $buffer .= \sprintf(
                     self::$methodTemplate,
                     $this->getDocblock($method),
                     $method->getName(),
@@ -116,18 +75,19 @@ class %s
 
         $buffer .= "}\n";
 
-        file_put_contents($wrapperFile, $buffer);
+        \file_put_contents($wrapperFile, $buffer);
     }
 
     /**
-     * @param  string $bootstrap
+     * @param string $bootstrap
+     *
      * @throws RuntimeException
      */
     private function loadBootstrap($bootstrap)
     {
-        if (!file_exists($bootstrap)) {
+        if (!\file_exists($bootstrap)) {
             throw new RuntimeException(
-                sprintf(
+                \sprintf(
                     'Cannot load bootstrap script "%s"',
                     $bootstrap
                 )
@@ -138,15 +98,16 @@ class %s
     }
 
     /**
-     * @param  string $class
-     * @param  string $file
+     * @param string $class
+     * @param string $file
+     *
      * @throws RuntimeException
      */
     private function loadClass($class, $file)
     {
-        if (!file_exists($file)) {
+        if (!\file_exists($file)) {
             throw new RuntimeException(
-                sprintf(
+                \sprintf(
                     'Cannot load source file "%s"',
                     $file
                 )
@@ -155,9 +116,9 @@ class %s
 
         require $file;
 
-        if (!class_exists($class, false)) {
+        if (!\class_exists($class, false)) {
             throw new RuntimeException(
-                sprintf(
+                \sprintf(
                     'Class "%s" does not exist',
                     $class
                 )
@@ -166,16 +127,17 @@ class %s
     }
 
     /**
-     * @param  ReflectionMethod $method
+     * @param ReflectionMethod $method
+     *
      * @return string
      */
     private function getDocblock(ReflectionMethod $method)
     {
-        $docblock    = substr($method->getDocComment(), 3, -2);
+        $docblock    = \substr($method->getDocComment(), 3, -2);
         $annotations = array('param' => array(), 'throws' => array());
 
-        if (preg_match_all('/@(?P<name>[A-Za-z_-]+)(?:[ \t]+(?P<value>.*?))?[ \t]*\r?$/m', $docblock, $matches)) {
-            $numMatches = count($matches[0]);
+        if (\preg_match_all('/@(?P<name>[A-Za-z_-]+)(?:[ \t]+(?P<value>.*?))?[ \t]*\r?$/m', $docblock, $matches)) {
+            $numMatches = \count($matches[0]);
 
             for ($i = 0; $i < $numMatches; ++$i) {
                 $annotations[$matches['name'][$i]][] = $matches['value'][$i];
@@ -196,7 +158,7 @@ class %s
             $docblock .= "\n     * @throws " . $throws;
         }
 
-        $docblock .= sprintf(
+        $docblock .= \sprintf(
             "\n     * @see %s::%s\n     */",
             $method->getDeclaringClass()->getName(),
             $method->getName()
@@ -206,8 +168,9 @@ class %s
     }
 
     /**
-     * @param  ReflectionMethod $method
-     * @param  boolean          $forCall
+     * @param ReflectionMethod $method
+     * @param bool             $forCall
+     *
      * @return string
      */
     private function getMethodParameters(ReflectionMethod $method, $forCall = false)
@@ -234,10 +197,10 @@ class %s
                 }
 
                 if ($parameter->isDefaultValueAvailable()) {
-                    $default = ' = ' . str_replace(
+                    $default = ' = ' . \str_replace(
                         "array (\n",
                         'array(',
-                        var_export($parameter->getDefaultValue(), true)
+                        \var_export($parameter->getDefaultValue(), true)
                     );
                 } elseif ($parameter->isOptional()) {
                     $default = ' = null';
@@ -251,6 +214,6 @@ class %s
             $parameters[] = $typeHint . $reference . $name . $default;
         }
 
-        return join(', ', $parameters);
+        return \implode(', ', $parameters);
     }
 }

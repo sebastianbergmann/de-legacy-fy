@@ -1,8 +1,7 @@
-build/coverage
-build/phar
-build/*.phar
-.idea
-cache.properties
-composer.phar
-composer.lock
-vendor
+/build/phar
+/build/*.phar*
+/.php_cs.cache
+/.idea
+/composer.lock
+/vendor
+/tools
