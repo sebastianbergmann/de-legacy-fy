@@ -134,7 +134,7 @@ class %s
     private function getDocblock(ReflectionMethod $method)
     {
         $docblock    = \substr($method->getDocComment(), 3, -2);
-        $annotations = array('param' => array(), 'throws' => array());
+        $annotations = ['param' => [], 'throws' => []];
 
         if (\preg_match_all('/@(?P<name>[A-Za-z_-]+)(?:[ \t]+(?P<value>.*?))?[ \t]*\r?$/m', $docblock, $matches)) {
             $numMatches = \count($matches[0]);
@@ -175,7 +175,7 @@ class %s
      */
     private function getMethodParameters(ReflectionMethod $method, $forCall = false)
     {
-        $parameters = array();
+        $parameters = [];
 
         foreach ($method->getParameters() as $parameter) {
             $name      = '$' . $parameter->getName();

@@ -19,7 +19,7 @@ class XdebugTraceParser
      */
     public function parse($filename, $unit)
     {
-        $data       = array();
+        $data       = [];
         $parameters = null;
 
         $fh = \fopen($filename, 'r');
@@ -45,7 +45,7 @@ class XdebugTraceParser
             }
 
             if ($parameters !== null && \count($line) == 6 && $line[2] == 'R') {
-                $data[]     = \array_merge(array(\trim($line[5])), $parameters);
+                $data[]     = \array_merge([\trim($line[5])], $parameters);
                 $parameters = null;
             }
         }

@@ -40,11 +40,10 @@ class XdebugParserTest extends TestCase
         );
     }
 
-    /**
-     * @expectedException \SebastianBergmann\DeLegacyFy\RuntimeException
-     */
     public function testExceptionIsRaisedForUnsupportedFileFormat()
     {
+        $this->expectException(RuntimeException::class);
+
         $this->parser->parse(
             __DIR__ . '/_fixture/xdebug-2.2.xt',
             'add'
