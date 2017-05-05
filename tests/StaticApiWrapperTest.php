@@ -55,29 +55,25 @@ use org\bovigo\vfs\vfsStreamDirectory;
  * @link      http://github.com/sebastianbergmann/de-legacy-fy/tree
  * @since     Class available since Release 1.0.0
  */
-class ReflectionBasedStaticApiWrapperTest extends PHPUnit_Framework_TestCase
+class StaticApiWrapperTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @var vfsStreamDirectory
      */
     private $root;
 
-    /**
-     * @var StaticApiWrapper
-     */
-    private $wrapper;
-
     protected function setUp()
     {
         $this->root    = vfsStream::setup();
-        $this->wrapper = new ReflectionBasedStaticApiWrapper();
     }
 
-    public function testGeneratesApiWrapperForClass()
+    public function testGeneratesExpectedApiWrapperForClassUsingReflection()
     {
         $actual = vfsStream::url('root') . '/LibraryWrapper.php';
 
-        $this->wrapper->generate(
+        $wrapper = new StaticApiWrapper(new ReflectionBasedClassParser());
+
+        $wrapper->generate(
             'Library',
             __DIR__ . '/_fixture/Library.php',
             'LibraryWrapper',
@@ -86,5 +82,22 @@ class ReflectionBasedStaticApiWrapperTest extends PHPUnit_Framework_TestCase
         );
 
         $this->assertFileEquals(__DIR__ . '/_fixture/LibraryWrapper.php', $actual);
+    }
+
+    public function testGeneratesExpectedApiWrapperForClassUsingPhpParser()
+    {
+        $actual = vfsStream::url('root') . '/LibraryWrapper.php';
+
+        $wrapper = new StaticApiWrapper(new PhpParserBasedClassParser());
+
+        $wrapper->generate(
+            'Library',
+            __DIR__ . '/_fixture/Library.php',
+            'LibraryWrapper',
+            $actual,
+            null
+        );
+
+        $this->assertFileEquals(__DIR__ . '/_fixture/LibraryWrapper.php', $actual, '', false, true);
     }
 }

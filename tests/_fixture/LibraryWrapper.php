@@ -6,10 +6,13 @@
 class LibraryWrapper
 {
     /**
+     * @param array $a
+     * @param $b
+     * @param null $c
      * @see Library::doSomething
      */
-    public function doSomething($a, &$b)
+    public function doSomething(array $a, &$b, $c = NULL)
     {
-        return Library::doSomething($a, $b);
+        return Library::doSomething($a, $b, $c);
     }
 }
