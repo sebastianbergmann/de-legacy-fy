@@ -46,9 +46,7 @@ namespace SebastianBergmann\DeLegacyFy\CLI;
 use SebastianBergmann\Version;
 use Symfony\Component\Console\Application as AbstractApplication;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\ArrayInput;
 
 /**
  * TextUI frontend for de-legacy-fy.

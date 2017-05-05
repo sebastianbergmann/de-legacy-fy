@@ -43,7 +43,7 @@
 
 namespace SebastianBergmann\DeLegacyFy\CLI;
 
-use SebastianBergmann\DeLegacyFy\StaticApiWrapper;
+use SebastianBergmann\DeLegacyFy\ReflectionBasedStaticApiWrapper;
 
 use Symfony\Component\Console\Command\Command as AbstractCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -95,7 +95,7 @@ class WrapStaticApiCommand extends AbstractCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $wrapper = new StaticApiWrapper;
+        $wrapper = new ReflectionBasedStaticApiWrapper();
 
         $originalClass = $input->getArgument('class');
         $originalFile  = $input->getArgument('file');

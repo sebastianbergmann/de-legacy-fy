@@ -55,7 +55,7 @@ use org\bovigo\vfs\vfsStreamDirectory;
  * @link      http://github.com/sebastianbergmann/de-legacy-fy/tree
  * @since     Class available since Release 1.0.0
  */
-class StaticApiWrapperTest extends PHPUnit_Framework_TestCase
+class ReflectionBasedStaticApiWrapperTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @var vfsStreamDirectory
@@ -70,7 +70,7 @@ class StaticApiWrapperTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->root    = vfsStream::setup();
-        $this->wrapper = new StaticApiWrapper;
+        $this->wrapper = new ReflectionBasedStaticApiWrapper();
     }
 
     public function testGeneratesApiWrapperForClass()
