@@ -1,17 +1,22 @@
 <?php
-use PHPUnit\Framework\TestCase;
-
-class CharacterizationTest extends TestCase
+class CharacterizationTest extends PHPUnit_Framework_TestCase
 {
-    public function provider(): array
+    /**
+     * @return array
+     */
+    public function provider()
     {
-        return [
-            [$this->decode('aTozOw=='), $this->decode('aToxOw=='), $this->decode('aToyOw==')]
-        ];
+        return array(
+            array($this->decode('aTozOw=='), $this->decode('aToxOw=='), $this->decode('aToyOw=='))
+        );
     }
 
-    private function decode(string $serializedValue)
+    /**
+     * @param  string $value
+     * @return mixed
+     */
+    private function decode($value)
     {
-        return unserialize(base64_decode($serializedValue));
+        return unserialize(base64_decode($value));
     }
 }
