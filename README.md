@@ -67,7 +67,7 @@ You can see the execution trace data collected by Xdebug below:
 
 ```
 $ cat /tmp/trace.4251619279.xt
-Version: 2.3.0dev
+Version: 2.5.3
 File format: 4
 TRACE START [2014-06-27 10:40:40]
 1	0	0	0.000282	279896	{main}	1		/home/sb/test.php	0	0
@@ -84,7 +84,7 @@ The `generate-characterization-test` command of `de-legacy-fy` can automatically
 
 ```
 $ de-legacy-fy generate-characterization-test add /tmp/trace.4251619279.xt CharacterizationTest CharacterizationTest.php
-de-legacy-fy 1.0.2 by Sebastian Bergmann.
+de-legacy-fy 2.0.0 by Sebastian Bergmann.
 
 Generated class "CharacterizationTest" in file "CharacterizationTest.php"
 ```
@@ -97,25 +97,28 @@ Here you can see the generated code for our example:
 
 ```php
 <?php
-class CharacterizationTest extends PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class CharacterizationTest extends TestCase
 {
     /**
      * @return array
      */
     public function provider()
     {
-        return array(
-            array($this->decode('aTozOw=='), $this->decode('aToxOw=='), $this->decode('aToyOw=='))
-        );
+        return [
+            [$this->decode('aTozOw=='), $this->decode('aToxOw=='), $this->decode('aToyOw==')]
+        ];
     }
 
     /**
-     * @param  string $value
+     * @param string $serializedValue
+     *
      * @return mixed
      */
-    private function decode($value)
+    private function decode($serializedValue)
     {
-        return unserialize(base64_decode($value));
+        return unserialize(base64_decode($serializedValue));
     }
 }
 ```
@@ -124,7 +127,9 @@ All that is left for us to do in order to implement the characterization test ca
 
 ```php
 <?php
-class CharacterizationTest extends PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class CharacterizationTest extends TestCase
 {
     /**
      * @dataProvider provider
@@ -139,18 +144,19 @@ class CharacterizationTest extends PHPUnit_Framework_TestCase
      */
     public function provider()
     {
-        return array(
-            array($this->decode('aTozOw=='), $this->decode('aToxOw=='), $this->decode('aToyOw=='))
-        );
+        return [
+            [$this->decode('aTozOw=='), $this->decode('aToxOw=='), $this->decode('aToyOw==')]
+        ];
     }
 
     /**
-     * @param  string $value
+     * @param string $serializedValue
+     *
      * @return mixed
      */
-    private function decode($value)
+    private function decode($serializedValue)
     {
-        return unserialize(base64_decode($value));
+        return unserialize(base64_decode($serializedValue));
     }
 }
 ```
@@ -204,7 +210,7 @@ wrapper class for a static API class such as `Library`:
 
 ```
 $ de-legacy-fy wrap-static-api Library Library.php
-de-legacy-fy 1.0.2 by Sebastian Bergmann.
+de-legacy-fy 2.0.0 by Sebastian Bergmann.
 
 Generated class "LibraryWrapper" in file "LibraryWrapper.php"
 ```
