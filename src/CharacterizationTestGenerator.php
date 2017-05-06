@@ -15,25 +15,20 @@ class CharacterizationTestGenerator
      * @var string
      */
     private static $classTemplate = '<?php
-class %s extends PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class %s extends TestCase
 {
-    /**
-     * @return array
-     */
-    public function provider()
+    public function provider(): array
     {
-        return array(
+        return [
 %s
-        );
+        ];
     }
 
-    /**
-     * @param  string $value
-     * @return mixed
-     */
-    private function decode($value)
+    private function decode(string $serializedValue)
     {
-        return unserialize(base64_decode($value));
+        return unserialize(base64_decode($serializedValue));
     }
 }
 ';
@@ -54,7 +49,7 @@ class %s extends PHPUnit_Framework_TestCase
             $last = $i == \count($data) - 1;
 
             $buffer .= \sprintf(
-                '            array(%s)%s',
+                '            [%s]%s',
                 \implode(
                     ', ',
                     \array_map(
