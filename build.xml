@@ -63,6 +63,12 @@
             </fileset>
         </copy>
 
+        <copy todir="${basedir}/build/phar/php-parser">
+            <fileset dir="${basedir}/vendor/nikic/php-parser/lib/PhpParser">
+                <include name="**/*.php"/>
+            </fileset>
+        </copy>
+
         <copy todir="${basedir}/build/phar/version">
             <fileset dir="${basedir}/vendor/sebastian/version/src">
                 <include name="**/*.php"/>
