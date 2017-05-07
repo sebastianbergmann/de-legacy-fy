@@ -1,5 +1,12 @@
 <?php
-
+/*
+ * This file is part of de-legacy-fy.
+ *
+ * (c) Sebastian Bergmann <sebastian@phpunit.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace SebastianBergmann\DeLegacyFy;
 
 class DocBlockParser
@@ -8,11 +15,12 @@ class DocBlockParser
      * @param string $originalDocBlock
      * @param string $classname
      * @param string $methodname
+     *
      * @return string
      */
     public function parse($originalDocBlock, $classname, $methodname)
     {
-        $docblock    = substr($originalDocBlock, 3, -2);
+        $docblock    = \substr($originalDocBlock, 3, -2);
         $annotations = ['param' => [], 'throws' => []];
 
         if (\preg_match_all('/@(?P<name>[A-Za-z_-]+)(?:[ \t]+(?P<value>.*?))?[ \t]*\r?$/m', $docblock, $matches)) {

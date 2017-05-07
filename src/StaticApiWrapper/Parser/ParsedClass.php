@@ -1,7 +1,13 @@
 <?php
-
+/*
+ * This file is part of de-legacy-fy.
+ *
+ * (c) Sebastian Bergmann <sebastian@phpunit.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace SebastianBergmann\DeLegacyFy;
-
 
 class ParsedClass
 {
@@ -13,15 +19,15 @@ class ParsedClass
     /**
      * @var PublicMethod[]
      */
-    private $publicMethods = array();
+    private $publicMethods = [];
 
     /**
-     * @param string $name
+     * @param string         $name
      * @param PublicMethod[] $publicMethods
      */
     public function __construct($name, array $publicMethods)
     {
-        $this->name = $name;
+        $this->name          = $name;
         $this->publicMethods = $publicMethods;
     }
 

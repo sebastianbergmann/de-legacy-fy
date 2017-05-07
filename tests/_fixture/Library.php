@@ -13,11 +13,9 @@ class Library
 
     protected function bar()
     {
-
     }
 
     private function foo()
     {
-
     }
 }

@@ -1,4 +1,12 @@
 <?php
+/*
+ * This file is part of de-legacy-fy.
+ *
+ * (c) Sebastian Bergmann <sebastian@phpunit.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace SebastianBergmann\DeLegacyFy;
 
 use ReflectionClass;
@@ -7,27 +15,29 @@ use ReflectionMethod;
 class ReflectionBasedClassParser implements ClassParser
 {
     /**
-     * @param string $classname
-     * @param string $filename
+     * @param string      $className
+     * @param string      $fileName
      * @param bool|string $bootstrap
+     *
      * @return ParsedClass
      */
-    public function parse($classname, $filename, $bootstrap)
+    public function parse($className, $fileName, $bootstrap)
     {
         if (\is_string($bootstrap)) {
             $this->loadBootstrap($bootstrap);
         }
 
-        $this->loadClass($classname, $filename);
+        $this->loadClass($className, $fileName);
 
-        $rc = new ReflectionClass($classname);
+        $rc = new ReflectionClass($className);
 
-        $methods = array();
+        $methods = [];
 
         foreach ($rc->getMethods() as $method) {
             if (!$method->isPublic()) {
                 continue;
             }
+
             $methods[] = new PublicMethod(
                 $method->getName(),
                 $this->getDocblock($method),
@@ -36,11 +46,12 @@ class ReflectionBasedClassParser implements ClassParser
             );
         }
 
-        return new ParsedClass($classname, $methods);
+        return new ParsedClass($className, $methods);
     }
 
     /**
-     * @param  string $bootstrap
+     * @param string $bootstrap
+     *
      * @throws RuntimeException
      */
     private function loadBootstrap($bootstrap)
@@ -87,18 +98,21 @@ class ReflectionBasedClassParser implements ClassParser
     }
 
     /**
-     * @param  ReflectionMethod $method
+     * @param ReflectionMethod $method
+     *
      * @return string
      */
     private function getDocblock(ReflectionMethod $method)
     {
         $parser = new DocBlockParser();
+
         return $parser->parse($method->getDocComment(), $method->getDeclaringClass()->getName(), $method->getName());
     }
 
     /**
-     * @param  ReflectionMethod $method
-     * @param  boolean          $forCall
+     * @param ReflectionMethod $method
+     * @param bool             $forCall
+     *
      * @return string
      */
     private function getMethodParameters(ReflectionMethod $method, $forCall = false)
@@ -106,21 +120,21 @@ class ReflectionBasedClassParser implements ClassParser
         $parameters = [];
 
         foreach ($method->getParameters() as $parameter) {
-            $name      = '$' . $parameter->getName();
-            $default   = '';
-            $reference = '';
-            $typeHint  = '';
+            $name           = '$' . $parameter->getName();
+            $default        = '';
+            $reference      = '';
+            $typeAnnotation = '';
 
             if (!$forCall) {
                 if ($parameter->isArray()) {
-                    $typeHint = 'array ';
+                    $typeAnnotation = 'array ';
                 } elseif ($parameter->isCallable()) {
-                    $typeHint = 'callable ';
+                    $typeAnnotation = 'callable ';
                 } else {
                     $class = $parameter->getClass();
 
                     if ($class !== null) {
-                        $typeHint = $class->getName() . ' ';
+                        $typeAnnotation = $class->getName() . ' ';
                     }
                 }
 
@@ -139,11 +153,9 @@ class ReflectionBasedClassParser implements ClassParser
                 $reference = '&';
             }
 
-            $parameters[] = $typeHint . $reference . $name . $default;
+            $parameters[] = $typeAnnotation . $reference . $name . $default;
         }
 
         return \implode(', ', $parameters);
     }
-
-
 }

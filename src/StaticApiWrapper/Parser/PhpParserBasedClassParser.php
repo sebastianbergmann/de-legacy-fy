@@ -1,4 +1,12 @@
 <?php
+/*
+ * This file is part of de-legacy-fy.
+ *
+ * (c) Sebastian Bergmann <sebastian@phpunit.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace SebastianBergmann\DeLegacyFy;
 
 use PhpParser\Lexer;
@@ -8,45 +16,51 @@ use PhpParser\Parser;
 class PhpParserBasedClassParser implements ClassParser
 {
     /**
-     * @param string $classname
-     * @param string $filename
+     * @param string      $className
+     * @param string      $fileName
      * @param bool|string $bootstrap
+     *
      * @return ParsedClass
+     *
+     * @throws RuntimeException
      */
-    public function parse($classname, $filename, $bootstrap)
+    public function parse($className, $fileName, $bootstrap)
     {
-        $this->ensureClassFileExists($filename);
+        $this->ensureSourceFileExists($fileName);
 
-        $parser = new Parser(new Lexer());
+        $parser = new Parser(new Lexer);
 
-        $nodes = $parser->parse(file_get_contents($filename));
+        $nodes = $parser->parse(\file_get_contents($fileName));
 
-        $classNode = $this->getClassNode($classname, $nodes);
+        $classNode = $this->getClassNode($className, $nodes);
 
-        $methods = array();
+        $methods = [];
 
         foreach ($this->getPublicMethodNodes($classNode) as $methodNode) {
             $methods[] = new PublicMethod(
                 $methodNode->name,
-                $this->getDocblock($methodNode, $classname),
+                $this->getDocblock($methodNode, $className),
                 $this->getMethodParameters($methodNode),
                 $this->getMethodParameters($methodNode, true)
             );
         }
 
-        return new ParsedClass($classname, $methods);
+        return new ParsedClass($className, $methods);
     }
 
     /**
      * @param string $filename
+     *
+     * @throws RuntimeException
      */
-    private function ensureClassFileExists($filename)
+    private function ensureSourceFileExists($filename)
     {
-        if (file_exists($filename)) {
+        if (\file_exists($filename)) {
             return;
         }
+
         throw new RuntimeException(
-            sprintf(
+            \sprintf(
                 'Cannot load source file "%s"',
                 $filename
             )
@@ -54,25 +68,29 @@ class PhpParserBasedClassParser implements ClassParser
     }
 
     /**
-     * @param $classname
-     * @param array $parsedNodes
+     * @param string $className
+     * @param array  $parsedNodes
+     *
      * @return Node\Stmt\Class_
+     *
+     * @throws RuntimeException
      */
-    private function getClassNode($classname, array $parsedNodes)
+    private function getClassNode($className, array $parsedNodes)
     {
         /** @var Node $node */
         foreach ($parsedNodes as $node) {
-            if ($node instanceof Node\Stmt\Class_ && $node->name == $classname) {
+            if ($node instanceof Node\Stmt\Class_ && $node->name == $className) {
                 return $node;
             }
         }
-        throw new RuntimeException(sprintf('Class %s not found', $classname));
+
+        throw new RuntimeException(\sprintf('Class %s not found', $className));
     }
 
-
     /**
-     * @param  Node\Stmt\ClassMethod $methodNode
-     * @param  boolean $forCall
+     * @param Node\Stmt\ClassMethod $methodNode
+     * @param bool                  $forCall
+     *
      * @return string
      */
     private function getMethodParameters(Node\Stmt\ClassMethod $methodNode, $forCall = false)
@@ -107,53 +125,64 @@ class PhpParserBasedClassParser implements ClassParser
 
     /**
      * @param Node\Param $parameter
+     *
      * @return string
+     *
+     * @throws RuntimeException
      */
     private function getDefaultValue(Node\Param $parameter)
     {
         if ($parameter->default instanceof Node\Expr\ConstFetch) {
             return ' = ' . $parameter->default->name->toString();
         }
+
         if ($parameter->default instanceof Node\Expr\Array_) {
             return ' = array()';
         }
+
         if ($parameter->default instanceof Node\Scalar\String_) {
-            return sprintf(' = \'%s\'', $parameter->default->value);
+            return \sprintf(' = \'%s\'', $parameter->default->value);
         }
+
         if ($parameter->default instanceof Node\Scalar\LNumber) {
-            return sprintf(' = %s', $parameter->default->value);
+            return \sprintf(' = %s', $parameter->default->value);
         }
+
         if ($parameter->default instanceof Node\Scalar\DNumber) {
-            return sprintf(' = %s', $parameter->default->value);
+            return \sprintf(' = %s', $parameter->default->value);
         }
 
-        throw new RuntimeException(sprintf('Unsupport default value for parameter %s', $parameter->name));
+        throw new RuntimeException(\sprintf('Unsupported default value for parameter %s', $parameter->name));
     }
-
 
     /**
      * @param Node\Stmt\ClassMethod $method
      * @param $classname
+     *
      * @return string
      */
     private function getDocblock(Node\Stmt\ClassMethod $method, $classname)
     {
-        $parser = new DocBlockParser();
+        $parser = new DocBlockParser;
+
         return $parser->parse($method->getDocComment(), $classname, $method->name);
     }
 
     /**
      * @param Node\Stmt\Class_ $classNode
+     *
      * @return Node\Stmt\ClassMethod[]
      */
     private function getPublicMethodNodes(Node\Stmt\Class_ $classNode)
     {
-        $methodNodes = array();
+        $methodNodes = [];
+
         foreach ($classNode->stmts as $node) {
-            if ($node instanceof Node\Stmt\ClassMethod && $node->isPublic())
+            if ($node instanceof Node\Stmt\ClassMethod && $node->isPublic()) {
                 $methodNodes[] = $node;
+            }
         }
+
         return $methodNodes;
     }
-
 }
