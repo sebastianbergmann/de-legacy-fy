@@ -14,7 +14,7 @@ class ReflectionBasedClassParser implements ClassParser
      */
     public function parse($classname, $filename, $bootstrap)
     {
-        if (is_string($bootstrap)) {
+        if (\is_string($bootstrap)) {
             $this->loadBootstrap($bootstrap);
         }
 
@@ -45,9 +45,9 @@ class ReflectionBasedClassParser implements ClassParser
      */
     private function loadBootstrap($bootstrap)
     {
-        if (!file_exists($bootstrap)) {
+        if (!\file_exists($bootstrap)) {
             throw new RuntimeException(
-                sprintf(
+                \sprintf(
                     'Cannot load bootstrap script "%s"',
                     $bootstrap
                 )
@@ -58,15 +58,16 @@ class ReflectionBasedClassParser implements ClassParser
     }
 
     /**
-     * @param  string $class
-     * @param  string $file
+     * @param string $class
+     * @param string $file
+     *
      * @throws RuntimeException
      */
     private function loadClass($class, $file)
     {
-        if (!file_exists($file)) {
+        if (!\file_exists($file)) {
             throw new RuntimeException(
-                sprintf(
+                \sprintf(
                     'Cannot load source file "%s"',
                     $file
                 )
@@ -75,9 +76,9 @@ class ReflectionBasedClassParser implements ClassParser
 
         require $file;
 
-        if (!class_exists($class, false)) {
+        if (!\class_exists($class, false)) {
             throw new RuntimeException(
-                sprintf(
+                \sprintf(
                     'Class "%s" does not exist',
                     $class
                 )
@@ -102,7 +103,7 @@ class ReflectionBasedClassParser implements ClassParser
      */
     private function getMethodParameters(ReflectionMethod $method, $forCall = false)
     {
-        $parameters = array();
+        $parameters = [];
 
         foreach ($method->getParameters() as $parameter) {
             $name      = '$' . $parameter->getName();
@@ -124,10 +125,10 @@ class ReflectionBasedClassParser implements ClassParser
                 }
 
                 if ($parameter->isDefaultValueAvailable()) {
-                    $default = ' = ' . str_replace(
+                    $default = ' = ' . \str_replace(
                             "array (\n",
                             'array(',
-                            var_export($parameter->getDefaultValue(), true)
+                            \var_export($parameter->getDefaultValue(), true)
                         );
                 } elseif ($parameter->isOptional()) {
                     $default = ' = null';
@@ -141,7 +142,7 @@ class ReflectionBasedClassParser implements ClassParser
             $parameters[] = $typeHint . $reference . $name . $default;
         }
 
-        return join(', ', $parameters);
+        return \implode(', ', $parameters);
     }
 
 

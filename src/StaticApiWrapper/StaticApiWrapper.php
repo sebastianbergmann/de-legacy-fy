@@ -1,4 +1,12 @@
 <?php
+/*
+ * This file is part of de-legacy-fy.
+ *
+ * (c) Sebastian Bergmann <sebastian@phpunit.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace SebastianBergmann\DeLegacyFy;
 
 class StaticApiWrapper
@@ -38,40 +46,37 @@ class %s
     }
 
     /**
-     * @param string $originalClass
-     * @param string $originalFile
-     * @param string $wrapperClass
-     * @param string $wrapperFile
-     * @param boolean|string $bootstrap
+     * @param string      $originalClass
+     * @param string      $originalFile
+     * @param string      $wrapperClass
+     * @param string      $wrapperFile
+     * @param bool|string $bootstrap
      */
     public function generate($originalClass, $originalFile, $wrapperClass, $wrapperFile, $bootstrap)
     {
         $class = $this->parser->parse($originalClass, $originalFile, $bootstrap);
 
-        $buffer = sprintf(
+        $buffer = \sprintf(
             self::$classTemplate,
             $originalClass,
             $originalClass,
             $wrapperClass
         );
 
-        foreach ($class->getPublicMethods() as $publicMethod) {
-            $buffer .= sprintf(
+        foreach ($class->getPublicMethods() as $method) {
+            $buffer .= \sprintf(
                 self::$methodTemplate,
-                $publicMethod->getDocBlock(),
-                $publicMethod->getName(),
-                $publicMethod->getParameters(),
+                $method->getDocBlock(),
+                $method->getName(),
+                $method->getParameters(),
                 $originalClass,
-                $publicMethod->getName(),
-                $publicMethod->getCallParameters()
+                $method->getName(),
+                $method->getCallParameters()
             );
         }
 
         $buffer .= "}\n";
 
-        file_put_contents($wrapperFile, $buffer);
+        \file_put_contents($wrapperFile, $buffer);
     }
-
-
-
 }

@@ -13,10 +13,10 @@ class DocBlockParser
     public function parse($originalDocBlock, $classname, $methodname)
     {
         $docblock    = substr($originalDocBlock, 3, -2);
-        $annotations = array('param' => array(), 'throws' => array());
+        $annotations = ['param' => [], 'throws' => []];
 
-        if (preg_match_all('/@(?P<name>[A-Za-z_-]+)(?:[ \t]+(?P<value>.*?))?[ \t]*\r?$/m', $docblock, $matches)) {
-            $numMatches = count($matches[0]);
+        if (\preg_match_all('/@(?P<name>[A-Za-z_-]+)(?:[ \t]+(?P<value>.*?))?[ \t]*\r?$/m', $docblock, $matches)) {
+            $numMatches = \count($matches[0]);
 
             for ($i = 0; $i < $numMatches; ++$i) {
                 $annotations[$matches['name'][$i]][] = $matches['value'][$i];
@@ -37,7 +37,7 @@ class DocBlockParser
             $docblock .= "\n     * @throws " . $throws;
         }
 
-        $docblock .= sprintf(
+        $docblock .= \sprintf(
             "\n     * @see %s::%s\n     */",
             $classname,
             $methodname

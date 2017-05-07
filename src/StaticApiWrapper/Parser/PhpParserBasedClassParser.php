@@ -77,7 +77,7 @@ class PhpParserBasedClassParser implements ClassParser
      */
     private function getMethodParameters(Node\Stmt\ClassMethod $methodNode, $forCall = false)
     {
-        $parameters = array();
+        $parameters = [];
 
         foreach ($methodNode->params as $parameter) {
             $name      = '$' . $parameter->name;
@@ -102,7 +102,7 @@ class PhpParserBasedClassParser implements ClassParser
             $parameters[] = $typeHint . $reference . $name . $default;
         }
 
-        return join(', ', $parameters);
+        return \implode(', ', $parameters);
     }
 
     /**
