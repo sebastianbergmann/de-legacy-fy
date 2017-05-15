@@ -12,5 +12,5 @@ All notable changes in de-legacy-fy are documented in this file using the [Keep 
 
 * Removed support for PHP 5.3, PHP 5.4, and PHP 5.5
 
-[2.0.0]: https://github.com/sebastianbergmann/phploc/compare/1.0.2...2.0.0
+[2.0.0]: https://github.com/sebastianbergmann/de-legacy-fy/compare/1.0.2...2.0.0
 
