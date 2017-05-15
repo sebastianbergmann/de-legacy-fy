@@ -18,7 +18,7 @@ class Application extends AbstractApplication
 {
     public function __construct()
     {
-        $version = new Version('2.0', \dirname(\dirname(__DIR__)));
+        $version = new Version('2.0.0', \dirname(\dirname(__DIR__)));
         parent::__construct('de-legacy-fy', $version->getVersion());
 
         $this->add(new GenerateCharacterizationTestCommand);
